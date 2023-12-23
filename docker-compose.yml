@@ -1,0 +1,8 @@
+version: '3.8'
+
+services:
+  bot:
+    build: .
+    environment:
+      - TOKEN=6976652766:AAHuRamgVS_tjxojwBlJGM13t0vFr1UAmWE
+    restart: always
