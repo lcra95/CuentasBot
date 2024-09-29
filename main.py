@@ -68,7 +68,7 @@ def recibir_datos(update, context):
 
         # Confirmación de la transacción y solicitud del código de autorización
         update.message.reply_text("Transacción registrada correctamente con estado 'pendiente'.\n"
-                                  "Por favor, ingresa el código de autorización.")
+                                  "Por favor, ingresa el código de autorización o escribe 'exit', 'cancelar', o 'terminar' para cancelar la transacción.")
     except mysql.connector.Error as err:
         update.message.reply_text(f"Error al registrar la transacción: {err}")
     finally:
@@ -79,24 +79,34 @@ def recibir_datos(update, context):
 
 def recibir_codigo(update, context):
     global ultimo_id_transaccion
-    codigo_autorizacion = update.message.text
+    codigo_autorizacion = update.message.text.lower()
 
     try:
         # Conectar a la base de datos
         conn = mysql.connector.connect(**DB_CONFIG)
         cursor = conn.cursor()
 
-        # Actualizar la transacción con el código de autorización
-        query = """
-        UPDATE transaccion
-        SET codigo_autorizacion = %s, estado = 'autorizado'
-        WHERE id = %s
-        """
-        cursor.execute(query, (codigo_autorizacion, ultimo_id_transaccion))
+        if codigo_autorizacion in ['exit', 'cancelar', 'terminar']:
+            # Actualizar la transacción a estado 'cancelada'
+            query = """
+            UPDATE transaccion
+            SET estado = 'cancelada'
+            WHERE id = %s
+            """
+            cursor.execute(query, (ultimo_id_transaccion,))
+            update.message.reply_text("La transacción ha sido cancelada.")
+        else:
+            # Actualizar la transacción con el código de autorización y cambiar a 'autorizado'
+            query = """
+            UPDATE transaccion
+            SET codigo_autorizacion = %s, estado = 'autorizado'
+            WHERE id = %s
+            """
+            cursor.execute(query, (codigo_autorizacion, ultimo_id_transaccion))
+            update.message.reply_text(f"Código de autorización '{codigo_autorizacion}' agregado a la transacción.")
+
         conn.commit()
 
-        # Confirmación de que el código fue agregado
-        update.message.reply_text(f"Código de autorización '{codigo_autorizacion}' agregado a la transacción.")
     except mysql.connector.Error as err:
         update.message.reply_text(f"Error al actualizar la transacción: {err}")
     finally:
@@ -151,7 +161,7 @@ def recibir_datos_otro(update, context):
 
         # Confirmación de la transacción y solicitud del código de autorización
         update.message.reply_text("Transacción registrada correctamente con estado 'pendiente'.\n"
-                                  "Por favor, ingresa el código de autorización.")
+                                  "Por favor, ingresa el código de autorización o escribe 'exit', 'cancelar', o 'terminar' para cancelar la transacción.")
     except mysql.connector.Error as err:
         update.message.reply_text(f"Error al registrar la transacción: {err}")
     finally:
@@ -162,24 +172,34 @@ def recibir_datos_otro(update, context):
 
 def recibir_codigo_otro(update, context):
     global ultimo_id_transaccion_otro
-    codigo_autorizacion = update.message.text
+    codigo_autorizacion = update.message.text.lower()
 
     try:
         # Conectar a la base de datos
         conn = mysql.connector.connect(**DB_CONFIG)
         cursor = conn.cursor()
 
-        # Actualizar la transacción con el código de autorización
-        query = """
-        UPDATE transaccion
-        SET codigo_autorizacion = %s, estado = 'autorizado'
-        WHERE id = %s
-        """
-        cursor.execute(query, (codigo_autorizacion, ultimo_id_transaccion_otro))
+        if codigo_autorizacion in ['exit', 'cancelar', 'terminar']:
+            # Actualizar la transacción a estado 'cancelada'
+            query = """
+            UPDATE transaccion
+            SET estado = 'cancelada'
+            WHERE id = %s
+            """
+            cursor.execute(query, (ultimo_id_transaccion_otro,))
+            update.message.reply_text("La transacción ha sido cancelada.")
+        else:
+            # Actualizar la transacción con el código de autorización y cambiar a 'autorizado'
+            query = """
+            UPDATE transaccion
+            SET codigo_autorizacion = %s, estado = 'autorizado'
+            WHERE id = %s
+            """
+            cursor.execute(query, (codigo_autorizacion, ultimo_id_transaccion_otro))
+            update.message.reply_text(f"Código de autorización '{codigo_autorizacion}' agregado a la transacción.")
+
         conn.commit()
 
-        # Confirmación de que el código fue agregado
-        update.message.reply_text(f"Código de autorización '{codigo_autorizacion}' agregado a la transacción.")
     except mysql.connector.Error as err:
         update.message.reply_text(f"Error al actualizar la transacción: {err}")
     finally:
