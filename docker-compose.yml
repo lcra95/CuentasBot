@@ -6,3 +6,10 @@ services:
     environment:
       - TOKEN=6976652766:AAHuRamgVS_tjxojwBlJGM13t0vFr1UAmWE
     restart: always
+    logging:
+      driver: "json-file"  # Asegura que los logs se capturen en un formato legible
+      options:
+        max-size: "10m"    # Limita el tamaño de cada archivo de log
+        max-file: "3"      # Mantiene hasta 3 archivos de logs rotativos para evitar llenar el disco
+    tty: true               # Permite que los logs se mantengan en tiempo real (soluciona problemas de no adjuntar logs)
+    stdin_open: true        # Mantiene la entrada estándar abierta para capturar correctamente los logs
