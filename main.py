@@ -57,8 +57,8 @@ def recibir_datos(update, context):
 
         # Insertar la transacción en la tabla con estado "pendiente"
         query = """
-        INSERT INTO transaccion (cliente, tipo_operacion, cedula, cuenta, nombre, monto, estado)
-        VALUES (%s, %s, %s, %s, %s, %s, 'pendiente')
+        INSERT INTO transaccion (cliente, tipo_operacion, cedula, cuenta, nombre, monto, estado, tipo_transaccion)
+        VALUES (%s, %s, %s, %s, %s, %s, 'pendiente', 'T')
         """
         cursor.execute(query, (cliente, '0102', cedula, cuenta, nombre_persona, monto))
         conn.commit()
@@ -150,8 +150,8 @@ def recibir_datos_otro(update, context):
 
         # Insertar la transacción en la tabla con estado "pendiente"
         query = """
-        INSERT INTO transaccion (cliente, tipo_operacion, cedula, cuenta, nombre, monto, estado)
-        VALUES (%s, %s, %s, %s, %s, %s, 'pendiente')
+        INSERT INTO transaccion (cliente, tipo_operacion, cedula, cuenta, nombre, monto, estado, tipo_transaccion)
+        VALUES (%s, %s, %s, %s, %s, %s, 'pendiente', 'T')
         """
         cursor.execute(query, (cliente, codigo_banco, cedula, cuenta, nombre_receptor, monto))
         conn.commit()
